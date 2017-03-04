@@ -14,6 +14,7 @@ function Draw()
 	    const SQUARE_SIZE = 15;
 	    var x = 0;
 	    var y = 0;
+	    var a = 0;
 
 	    for(var i = 0; i < 18; i++)
 	    {
@@ -29,12 +30,14 @@ function Draw()
 				ctx.fillStyle = "#c0c0c0";
 				ctx.fill();
 
+				// отрисовка открытых клеток
+
 				if(i == 5 && j == 6 || i == 5 && j == 7)
 				{
-					ctx.beginPath();
+					/*ctx.beginPath();
 					ctx.rect(x, y, SQUARE_SIZE + 3, SQUARE_SIZE + 3);
 					ctx.fillStyle = "#808080";
-					ctx.fill();
+					ctx.fill();*/
 
 					ctx.beginPath();
 					ctx.rect(x + 1, y + 1, SQUARE_SIZE + 2, SQUARE_SIZE + 2);
@@ -46,12 +49,62 @@ function Draw()
 					ctx.fillText("3", x + SQUARE_SIZE / 4, y + SQUARE_SIZE - 1);
 				}
 
+				ctx.addHitRegion( {id: a} );
+
 				x = x + SQUARE_SIZE + 2;
+
+				a++;
 	    	}
 
 	    	y = y + SQUARE_SIZE + 2;
 	    	x = 0;
 	    }
+
+	    canvas.addEventListener('click', function(event){
+			if(event.region) {
+
+				 var ctx = canvas.getContext('2d');
+				 var rect = canvas.getBoundingClientRect();
+
+				// 18 x 18 - размер поля
+				// размер хода по х: SQUARE_SIZE + 2
+				// размер хода по y: SQUARE_SIZE + 2
+				// мат расчётами получим начало отрисовки открытой ячейки 
+
+				var ClickX = event.clientX - rect.left;
+				var ClickY = event.clientY - rect.top;
+
+				// console.log(ClickY);
+
+				var x = ClickX / (SQUARE_SIZE + 2);
+				var y = ClickY / (SQUARE_SIZE + 2);
+
+				x = Math.floor(x) * (SQUARE_SIZE + 2);
+				y = Math.floor(y) * (SQUARE_SIZE + 2);
+
+				// Убрал нахуй, почему убрал? когда рядом ставишь 2 слева на права не отрисовывается нихуя
+
+				ctx.beginPath();
+				ctx.rect(x, y, SQUARE_SIZE + 3, SQUARE_SIZE + 3);
+				ctx.fillStyle = "#808080";
+				ctx.fill();
+
+				ctx.beginPath();
+				ctx.rect(x + 1, y + 1, SQUARE_SIZE + 1, SQUARE_SIZE + 1);
+				ctx.fillStyle = "#c0c0c0";
+				ctx.fill();
+
+				console.log(event.region);
+
+				// ctx.removeHitRegion(event.region);
+
+				/*ctx.font = "bold 13px Lucida Console";
+				ctx.fillStyle = "#0000ff";
+				ctx.fillText("0", x + SQUARE_SIZE / 4, y + SQUARE_SIZE - 1);*/
+
+				// console.log(event);
+			}
+		});
 
 	    // ctx.beginPath();
 		// ctx.rect(15, 15, 15, 15);
