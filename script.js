@@ -89,8 +89,6 @@ function Draw()
 
 	    canvas.addEventListener('click', function(event) {
 
-	    	console.log(event);
-
 			var ctx = canvas.getContext('2d');
 			var rect = canvas.getBoundingClientRect();
 
