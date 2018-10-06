@@ -9,7 +9,7 @@ function Cell( ctx )
 	this.state = CELL_CLOSED;
 	this.isBomb = false;
 
-	this.indicator;
+	this.indicator = 0;
 
 	this.xCoord;
 	this.yCoord;

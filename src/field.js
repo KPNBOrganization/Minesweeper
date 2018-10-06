@@ -59,8 +59,14 @@ function Field( ctx, gameState )
 
 								bombs++;
 
-								ctx.fillStyle = '#000000';
-								ctx.fillRect( cells[ bombRow ][ bombColumn ].xCoord, cells[ bombRow ][ bombColumn ].yCoord, 24, 24 );
+								var bombImage = new Image( 24, 24 );
+									bombImage.src = 'images/bomb.jpg';
+
+								bombImage.onload = function() {
+
+									ctx.drawImage( this, bombColumn * 24, bombRow * 24 );
+
+								};
 
 							}
 
@@ -73,6 +79,89 @@ function Field( ctx, gameState )
 				}
 
 			}
+
+			for( let i = 0; i < cells.length; i++ ) {
+
+				for( let j = 0; j < cells[ i ].length; j++ ) {
+
+					for( let k = -1; k <= 1; k++ ) {
+
+						for( let l = -1; l <= 1; l++ ) {
+
+							if( cells[ i + k ] && cells[ i + k ][ j + l ] && !( k == 0 && l == 0 ) ) {
+
+								if( cells[ i + k ][ j + l ].isBomb )
+									cells[ i ][ j ].indicator++;
+
+							}
+
+						}
+
+					}
+
+					if( cells[ i ][ j ].isBomb == false ) {
+
+						ctx.font = '20px Consolas';
+
+						var COLORS = [
+						    '#0000ff', // 1
+						    '#017f01', // 2
+						    '#ff0000', // 3
+						    '#010080', // 4
+						    '#810102', // 5
+						    '#008081', // 6
+						    '#000000', // 7
+						    '#808080' // 8
+						];
+
+						var openedCellImage = new Image( 24, 24 );
+							openedCellImage.src = 'images/opened-cell.jpg';
+
+						openedCellImage.onload = function() {
+
+							// ctx.drawImage( this, i * 24, j * 24 );
+
+							// ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator ];
+							// ctx.fillText( cells[ i ][ j ].indicator, 24 * i + 6, j * 24 - 5 );
+
+						};
+
+					}
+
+				}
+
+			}
+
+			console.log( cells );
+
+			/*ctx.font = '20px Consolas';
+
+			var COLORS = [
+			    '#0000ff', // 1
+			    '#017f01', // 2
+			    '#ff0000', // 3
+			    '#010080', // 4
+			    '#810102', // 5
+			    '#008081', // 6
+			    '#000000', // 7
+			    '#808080' // 8
+			];
+
+			for(let i = 0; i < 8; i++) {
+
+				var openedCellImage = new Image( 24, 24 );
+					openedCellImage.src = 'images/opened-cell.jpg';
+
+				openedCellImage.onload = function() {
+
+					ctx.drawImage( this, i * 24, 0 * 24 );
+
+					ctx.fillStyle = COLORS[ i ];
+					ctx.fillText( i + 1, 24 * i + 6, 24 - 5 );
+
+				};
+
+			}*/
 
 		});
 
