@@ -1,5 +1,7 @@
-function Field( ctx )
+function Field( ctx, gameState )
 {
+	this.gameState = gameState;
+
 	this.cells = [];
 
 	this.bombNumber;
@@ -9,11 +11,12 @@ function Field( ctx )
 		ctx.fillStyle = "#bdbdbd";
 		ctx.fillRect( 0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight );
 
-		var cells = this.cells;
+		let cells = this.cells;
+		let bombNumber = this.bombNumber;
+		let gameState = this.gameState;
 
 		var closedCellImage = new Image( 24, 24 );
 			closedCellImage.src = 'images/closed-cell.jpg';
-			// closedCellImage.cells = cells;
 
 		closedCellImage.onload = function() {
 
@@ -34,10 +37,34 @@ function Field( ctx )
 
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
-			let i = Math.ceil( event.clientY / 24 ) - 1;
-			let j = Math.ceil( event.clientX / 24 ) - 1;
+			let i = Math.ceil( event.clientX / 24 ) - 1;
+			let j = Math.ceil( event.clientY / 24 ) - 1;
 
-			console.log( cells[ i ][ j ] );
+			if( gameState == GAME_PAUSED ) {
+
+				var bombs = 0;
+
+				while( bombs < bombNumber ) {
+
+					let bombRow = Math.floor( Math.random() * cells.length );
+					let bombColumn = Math.floor( Math.random() * cells[ 0 ].length );
+
+					if( cells[ bombRow ][ bombColumn ].isBomb == false && bombRow != i && bombColumn != j ) {
+
+						cells[ bombRow ][ bombColumn ].isBomb = true;
+
+						bombs++;
+
+						ctx.fillStyle = '#000000';
+						ctx.fillRect( cells[ bombRow ][ bombColumn ].xCoord, cells[ bombRow ][ bombColumn ].yCoord, 24, 24 );
+
+					}
+
+				}
+
+				gameState = GAME_ON;
+
+			}
 
 		});
 

@@ -10,8 +10,6 @@ window.onload = function() {
 	var height = 10;
 	var width = 10;
 
-	var bombs = 10;
-
 	for( let i = 0; i < height; i++ ) {
 
 		game.field.cells[ i ] = [];
@@ -23,6 +21,8 @@ window.onload = function() {
 		}
 
 	}
+
+	game.field.bombNumber = 10;
 
 	game.field.draw();
 
