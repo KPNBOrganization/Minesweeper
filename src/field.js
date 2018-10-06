@@ -40,29 +40,37 @@ function Field( ctx, gameState )
 			let i = Math.ceil( event.clientX / 24 ) - 1;
 			let j = Math.ceil( event.clientY / 24 ) - 1;
 
-			if( gameState == GAME_PAUSED ) {
+			if( cells[ i ] && cells[ i ][ j ] ) {
 
-				var bombs = 0;
+				if( gameState == GAME_PAUSED ) {
 
-				while( bombs < bombNumber ) {
+					if( bombNumber <= ( cells.length * cells[ 0 ].length - 1 ) ) {
 
-					let bombRow = Math.floor( Math.random() * cells.length );
-					let bombColumn = Math.floor( Math.random() * cells[ 0 ].length );
+						var bombs = 0;
 
-					if( cells[ bombRow ][ bombColumn ].isBomb == false && bombRow != i && bombColumn != j ) {
+						while( bombs < bombNumber ) {
 
-						cells[ bombRow ][ bombColumn ].isBomb = true;
+							let bombRow = Math.floor( Math.random() * cells.length );
+							let bombColumn = Math.floor( Math.random() * cells[ 0 ].length );
 
-						bombs++;
+							if( cells[ bombRow ][ bombColumn ].isBomb == false && !( bombRow == i && bombColumn == j ) ) {
 
-						ctx.fillStyle = '#000000';
-						ctx.fillRect( cells[ bombRow ][ bombColumn ].xCoord, cells[ bombRow ][ bombColumn ].yCoord, 24, 24 );
+								cells[ bombRow ][ bombColumn ].isBomb = true;
+
+								bombs++;
+
+								ctx.fillStyle = '#000000';
+								ctx.fillRect( cells[ bombRow ][ bombColumn ].xCoord, cells[ bombRow ][ bombColumn ].yCoord, 24, 24 );
+
+							}
+
+						}
+
+						gameState = GAME_ON;
 
 					}
 
 				}
-
-				gameState = GAME_ON;
 
 			}
 
