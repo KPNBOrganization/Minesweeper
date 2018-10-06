@@ -1,15 +1,12 @@
 function Game( ctx )
 {
+	this.field;
+	this.time;
 
-	// ctx.fillStyle = 'rgb()';
+	this.reset = function() {
 
-	// Rect draw
+		this.field = new Field( ctx );
+		this.time = 0;
 
-	// ctx.fillStyle = '#000000';
-	// ctx.fillRect( 0, 0, 150, 75 );
-
-	// Image draw
-
-	
-
+	}
 }
