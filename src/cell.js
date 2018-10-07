@@ -18,8 +18,6 @@ function Cell( ctx )
 
 		this.state = CELL_OPENED;
 
-
-
 	};
 
 	this.flag = function() {

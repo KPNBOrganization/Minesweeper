@@ -1,6 +1,7 @@
 const OPENED_CELL_IMAGE = 1;
 const CLOSED_CELL_IMAGE = 2;
 const BOMB_IMAGE = 3;
+const OPENED_BOMB_IMAGE = 4;
 
 function Resources()
 {
@@ -18,6 +19,11 @@ function Resources()
 		{
 			id: BOMB_IMAGE,
 			src: 'images/bomb.jpg',
+			image: null
+		},
+		{
+			id: OPENED_BOMB_IMAGE,
+			src: 'images/opened-bomb.jpg',
 			image: null
 		}
 	];

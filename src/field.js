@@ -30,10 +30,10 @@ function Field( ctx, gameState )
 
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
-			let startRow = Math.ceil( event.clientX / 24 ) - 1;
-			let startColumn = Math.ceil( event.clientY / 24 ) - 1;
+			let clickRow = Math.ceil( event.clientY / 24 ) - 1;
+			let clickColumn = Math.ceil( event.clientX / 24 ) - 1;
 
-			if( cells[ startRow ] && cells[ startRow ][ startColumn ] ) {
+			if( cells[ clickRow ] && cells[ clickRow ][ clickColumn ] ) {
 
 				if( gameState == GAME_PAUSED ) {
 
@@ -48,7 +48,7 @@ function Field( ctx, gameState )
 							let bombRow = Math.floor( Math.random() * cells.length );
 							let bombColumn = Math.floor( Math.random() * cells[ 0 ].length );
 
-							if( cells[ bombRow ][ bombColumn ].isBomb == false && !( bombRow == startRow && bombColumn == startColumn ) ) {
+							if( cells[ bombRow ][ bombColumn ].isBomb == false && !( bombRow == clickRow && bombColumn == clickColumn ) ) {
 
 								cells[ bombRow ][ bombColumn ].isBomb = true;
 
@@ -86,9 +86,9 @@ function Field( ctx, gameState )
 					    '#808080' // 8
 					];
 
-					for( let i = 0; i < cells.length; i++ ) {
+					for( let i = 0; i < cells.length; i++ ) { // Row => y
 
-						for( let j = 0; j < cells[ i ].length; j++ ) {
+						for( let j = 0; j < cells[ i ].length; j++ ) { // Column => x
 
 							for( let k = -1; k <= 1; k++ ) {
 
@@ -105,14 +105,46 @@ function Field( ctx, gameState )
 
 							}
 
-							if( cells[ i ][ j ].isBomb == false ) {
+							// if( cells[ i ][ j ].isBomb == false ) {
 									
-								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, i * 24, j * 24 );
+							// 	ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, j * 24, i * 24 );
 
-								if( cells[ i ][ j ].indicator > 0 ) {
+							// 	if( cells[ i ][ j ].indicator > 0 ) {
 
-									ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator - 1 ];
-									ctx.fillText( cells[ i ][ j ].indicator, i * 24 + 6, ( j + 1 ) * 24 - 5 );
+							// 		ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator - 1 ];
+							// 		ctx.fillText( cells[ i ][ j ].indicator, j * 24 + 6, i * 24 + 19 );
+
+							// 	}
+
+							// }
+
+						}
+
+					}
+
+					console.log( 'Finished Bombs generation' );
+
+				} else if( gameState == GAME_ON ) {
+
+					console.log( 'Click Registred' );
+
+					console.log( clickRow, clickColumn );
+
+					cells[ clickRow ][ clickColumn ].open();
+
+					if( cells[ clickRow ][ clickColumn ].isBomb ) {
+
+						console.log( 'ITS A FUCKING BOMB!' );
+
+						gameState = GAME_OVER;
+
+						for( let i = 0; i < cells.length; i++ ) { // Row => y
+
+							for( let j = 0; j < cells[ i ].length; j++ ) { // Column => x
+
+								if( cells[ i ][ j ].isBomb ) {
+
+									ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, j * 24, i * 24 );
 
 								}
 
@@ -120,8 +152,9 @@ function Field( ctx, gameState )
 
 						}
 
-					}
+						ctx.drawImage( ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, clickColumn * 24, clickRow * 24 );
 
+					}
 
 				}
 
