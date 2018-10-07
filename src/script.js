@@ -22,13 +22,15 @@ window.onload = function() {
 
 			for( let j = 0; j < width; j++ ) {
 
-				game.field.cells[ i ][ j ] = new Cell( ctx );
+				game.field.cells[ i ][ j ] = new Cell( ctx, game.field );
 
 			}
 
 		}
 
 		game.field.bombNumber = 10;
+
+		game.field.cellsCount = height * width - game.field.bombNumber;
 
 		game.field.draw();
 

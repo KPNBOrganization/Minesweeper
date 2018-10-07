@@ -1,6 +1,8 @@
-function Field( ctx, gameState )
+function Field( ctx, game )
 {
-	this.gameState = gameState;
+	this.game = game;
+
+	this.cellsCount;
 
 	this.cells = [];
 
@@ -12,8 +14,11 @@ function Field( ctx, gameState )
 		ctx.fillRect( 0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight );
 
 		let cells = this.cells;
+		// let cellsCount = this.cellsCount;
 		let bombNumber = this.bombNumber;
-		let gameState = this.gameState;
+		let gameState = this.game.state;
+
+		let field = this;
 
 		for( let i = 0; i < cells.length; i++ ) {
 
@@ -124,69 +129,75 @@ function Field( ctx, gameState )
 
 					console.log( 'Finished Bombs generation' );
 
-				} else if( gameState == GAME_ON ) {
+				} 
 
-					console.log( 'Click Registred' );
+				if( gameState == GAME_ON ) {
 
-					console.log( clickRow, clickColumn );
+					if( cells[ clickRow ][ clickColumn ].state == CELL_CLOSED ) {
 
-					cells[ clickRow ][ clickColumn ].open();
+						console.log( 'Click Registred' );
 
-					if( cells[ clickRow ][ clickColumn ].isBomb ) {
+						console.log( clickRow, clickColumn );
 
-						console.log( 'ITS A FUCKING BOMB!' );
+						cells[ clickRow ][ clickColumn ].open();
 
-						gameState = GAME_OVER;
+						if( cells[ clickRow ][ clickColumn ].isBomb ) {
 
-						for( let i = 0; i < cells.length; i++ ) { // Row => y
+							console.log( 'ITS A FUCKING BOMB!' );
 
-							for( let j = 0; j < cells[ i ].length; j++ ) { // Column => x
+							gameState = GAME_OVER;
 
-								if( cells[ i ][ j ].isBomb ) {
+							for( let i = 0; i < cells.length; i++ ) { // Row => y
 
-									ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, j * 24, i * 24 );
+								for( let j = 0; j < cells[ i ].length; j++ ) { // Column => x
+
+									if( cells[ i ][ j ].isBomb ) {
+
+										ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, j * 24, i * 24 );
+
+									}
 
 								}
 
 							}
 
-						}
-
-						ctx.drawImage( ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, clickColumn * 24, clickRow * 24 );
-
-					} else {
-
-						if( cells[ clickRow ][ clickColumn ].indicator > 0 ) {
-
-							ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, clickColumn * 24, clickRow * 24 );
-
-							ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
-							ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
+							ctx.drawImage( ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, clickColumn * 24, clickRow * 24 );
 
 						} else {
 
-							function openClosestCells( cellRow, cellColumn ) {
+							if( cells[ clickRow ][ clickColumn ].indicator > 0 ) {
 
-								for( let k = -1; k <= 1; k++ ) {
+								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, clickColumn * 24, clickRow * 24 );
 
-									for( let l = -1; l <= 1; l++ ) {
+								ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
+								ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
 
-										if( cells[ cellRow + k ] && cells[ cellRow + k ][ cellColumn + l ] && !( k == 0 && l == 0 ) ) {
+							} else {
 
-											if( cells[ cellRow + k ][ cellColumn + l ].state == CELL_CLOSED ) {
+								function openClosestCells( cellRow, cellColumn ) {
 
-												cells[ cellRow + k ][ cellColumn + l ].open();
+									for( let k = -1; k <= 1; k++ ) {
 
-												ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, ( cellColumn + l ) * 24, ( cellRow + k ) * 24 );
+										for( let l = -1; l <= 1; l++ ) {
 
-												if( cells[ cellRow + k ][ cellColumn + l ].indicator > 0 ) {
+											if( cells[ cellRow + k ] && cells[ cellRow + k ][ cellColumn + l ] && !( k == 0 && l == 0 ) ) {
 
-													ctx.fillStyle = COLORS[ cells[ cellRow + k ][ cellColumn + l ].indicator - 1 ];
-													ctx.fillText( cells[ cellRow + k ][ cellColumn + l ].indicator, ( cellColumn + l ) * 24 + 6, ( cellRow + k ) * 24 + 19 );
+												if( cells[ cellRow + k ][ cellColumn + l ].state == CELL_CLOSED ) {
 
-												} else {
+													cells[ cellRow + k ][ cellColumn + l ].open();
 
-													openClosestCells( cellRow + k, cellColumn + l );
+													if( cells[ cellRow + k ][ cellColumn + l ].indicator > 0 ) {
+
+														ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, ( cellColumn + l ) * 24, ( cellRow + k ) * 24 );
+
+														ctx.fillStyle = COLORS[ cells[ cellRow + k ][ cellColumn + l ].indicator - 1 ];
+														ctx.fillText( cells[ cellRow + k ][ cellColumn + l ].indicator, ( cellColumn + l ) * 24 + 6, ( cellRow + k ) * 24 + 19 );
+
+													} else {
+
+														openClosestCells( cellRow + k, cellColumn + l );
+
+													}
 
 												}
 
@@ -196,19 +207,21 @@ function Field( ctx, gameState )
 
 									}
 
-								}
+									ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, cellColumn * 24, cellRow * 24 );
 
-								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, cellColumn * 24, cellRow * 24 );
+								};
 
-								// if( cells[ cellsRow ][ cellColumn ]  )
-								// ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
-								// ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
+								openClosestCells( clickRow, clickColumn );
 
-							};
+							}
 
-							openClosestCells( clickRow, clickColumn );
+							if( field.cellsCount == 0 ) {
 
-							// cells[ clickRow ][ clickColumn ]
+								gameState = GAME_OVER;
+
+								console.log( 'You won!' );
+
+							}
 
 						}
 

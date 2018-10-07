@@ -10,7 +10,7 @@ function Game( ctx )
 
 	this.reset = function() {
 
-		this.field = new Field( ctx, this.state );
+		this.field = new Field( ctx, this );
 		this.time = 0;
 
 	}

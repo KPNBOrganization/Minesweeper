@@ -4,8 +4,10 @@ const CELL_CLOSED = 0;
 const CELL_OPENED = 1;
 const CELL_FLAGGED = 2;
 
-function Cell( ctx )
+function Cell( ctx, field )
 {
+	this.field = field;
+
 	this.state = CELL_CLOSED;
 	this.isBomb = false;
 
@@ -17,6 +19,10 @@ function Cell( ctx )
 	this.open = function() {
 
 		this.state = CELL_OPENED;
+
+		this.field.cellsCount--;
+
+		console.log( this.field.cellsCount );
 
 	};
 
