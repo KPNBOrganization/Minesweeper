@@ -28,6 +28,19 @@ function Field( ctx, gameState )
 
 		}
 
+		ctx.font = '20px Consolas';
+
+		let COLORS = [
+		    '#0000ff', // 1
+		    '#017f01', // 2
+		    '#ff0000', // 3
+		    '#010080', // 4
+		    '#810102', // 5
+		    '#008081', // 6
+		    '#000000', // 7
+		    '#808080' // 8
+		];
+
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
 			let clickRow = Math.ceil( event.clientY / 24 ) - 1;
@@ -72,19 +85,6 @@ function Field( ctx, gameState )
 					}
 
 					// Calculating Indicators
-
-					ctx.font = '20px Consolas';
-
-					var COLORS = [
-					    '#0000ff', // 1
-					    '#017f01', // 2
-					    '#ff0000', // 3
-					    '#010080', // 4
-					    '#810102', // 5
-					    '#008081', // 6
-					    '#000000', // 7
-					    '#808080' // 8
-					];
 
 					for( let i = 0; i < cells.length; i++ ) { // Row => y
 
@@ -153,6 +153,64 @@ function Field( ctx, gameState )
 						}
 
 						ctx.drawImage( ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, clickColumn * 24, clickRow * 24 );
+
+					} else {
+
+						if( cells[ clickRow ][ clickColumn ].indicator > 0 ) {
+
+							ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, clickColumn * 24, clickRow * 24 );
+
+							ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
+							ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
+
+						} else {
+
+							function openClosestCells( cellRow, cellColumn ) {
+
+								for( let k = -1; k <= 1; k++ ) {
+
+									for( let l = -1; l <= 1; l++ ) {
+
+										if( cells[ cellRow + k ] && cells[ cellRow + k ][ cellColumn + l ] && !( k == 0 && l == 0 ) ) {
+
+											if( cells[ cellRow + k ][ cellColumn + l ].state == CELL_CLOSED ) {
+
+												cells[ cellRow + k ][ cellColumn + l ].open();
+
+												ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, ( cellColumn + l ) * 24, ( cellRow + k ) * 24 );
+
+												if( cells[ cellRow + k ][ cellColumn + l ].indicator > 0 ) {
+
+													ctx.fillStyle = COLORS[ cells[ cellRow + k ][ cellColumn + l ].indicator - 1 ];
+													ctx.fillText( cells[ cellRow + k ][ cellColumn + l ].indicator, ( cellColumn + l ) * 24 + 6, ( cellRow + k ) * 24 + 19 );
+
+												} else {
+
+													openClosestCells( cellRow + k, cellColumn + l );
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, cellColumn * 24, cellRow * 24 );
+
+								// if( cells[ cellsRow ][ cellColumn ]  )
+								// ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
+								// ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
+
+							};
+
+							openClosestCells( clickRow, clickColumn );
+
+							// cells[ clickRow ][ clickColumn ]
+
+						}
 
 					}
 
