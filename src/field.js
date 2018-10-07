@@ -15,34 +15,29 @@ function Field( ctx, gameState )
 		let bombNumber = this.bombNumber;
 		let gameState = this.gameState;
 
-		var closedCellImage = new Image( 24, 24 );
-			closedCellImage.src = 'images/closed-cell.jpg';
+		for( let i = 0; i < cells.length; i++ ) {
 
-		closedCellImage.onload = function() {
+			for( let j = 0; j < cells[ i ].length; j++ ) {
 
-			for( let i = 0; i < cells.length; i++ ) {
+				cells[ i ][ j ].xCoord = i * 24;
+				cells[ i ][ j ].yCoord = j * 24;
 
-				for( let j = 0; j < cells[ i ].length; j++ ) {
-
-					cells[ i ][ j ].xCoord = i * 24;
-					cells[ i ][ j ].yCoord = j * 24;
-
-					ctx.drawImage( this, i * 24, j * 24 );
-
-				}
+				ctx.drawImage( ctx.resources.getResource( CLOSED_CELL_IMAGE ).image, i * 24, j * 24 );
 
 			}
 
-		};
+		}
 
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
-			let i = Math.ceil( event.clientX / 24 ) - 1;
-			let j = Math.ceil( event.clientY / 24 ) - 1;
+			let startRow = Math.ceil( event.clientX / 24 ) - 1;
+			let startColumn = Math.ceil( event.clientY / 24 ) - 1;
 
-			if( cells[ i ] && cells[ i ][ j ] ) {
+			if( cells[ startRow ] && cells[ startRow ][ startColumn ] ) {
 
 				if( gameState == GAME_PAUSED ) {
+
+					// Calculating Bombs
 
 					if( bombNumber <= ( cells.length * cells[ 0 ].length - 1 ) ) {
 
@@ -53,20 +48,20 @@ function Field( ctx, gameState )
 							let bombRow = Math.floor( Math.random() * cells.length );
 							let bombColumn = Math.floor( Math.random() * cells[ 0 ].length );
 
-							if( cells[ bombRow ][ bombColumn ].isBomb == false && !( bombRow == i && bombColumn == j ) ) {
+							if( cells[ bombRow ][ bombColumn ].isBomb == false && !( bombRow == startRow && bombColumn == startColumn ) ) {
 
 								cells[ bombRow ][ bombColumn ].isBomb = true;
 
 								bombs++;
 
-								var bombImage = new Image( 24, 24 );
-									bombImage.src = 'images/bomb.jpg';
+								// var bombImage = new Image( 24, 24 );
+									// bombImage.src = 'images/bomb.jpg';
 
-								bombImage.onload = function() {
+								// bombImage.onload = function() {
 
-									ctx.drawImage( this, bombColumn * 24, bombRow * 24 );
+									// ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, bombColumn * 24, bombRow * 24 );
 
-								};
+								// };
 
 							}
 
@@ -76,22 +71,50 @@ function Field( ctx, gameState )
 
 					}
 
-				}
+					// Calculating Indicators
 
-			}
+					ctx.font = '20px Consolas';
 
-			for( let i = 0; i < cells.length; i++ ) {
+					var COLORS = [
+					    '#0000ff', // 1
+					    '#017f01', // 2
+					    '#ff0000', // 3
+					    '#010080', // 4
+					    '#810102', // 5
+					    '#008081', // 6
+					    '#000000', // 7
+					    '#808080' // 8
+					];
 
-				for( let j = 0; j < cells[ i ].length; j++ ) {
+					for( let i = 0; i < cells.length; i++ ) {
 
-					for( let k = -1; k <= 1; k++ ) {
+						for( let j = 0; j < cells[ i ].length; j++ ) {
 
-						for( let l = -1; l <= 1; l++ ) {
+							for( let k = -1; k <= 1; k++ ) {
 
-							if( cells[ i + k ] && cells[ i + k ][ j + l ] && !( k == 0 && l == 0 ) ) {
+								for( let l = -1; l <= 1; l++ ) {
 
-								if( cells[ i + k ][ j + l ].isBomb )
-									cells[ i ][ j ].indicator++;
+									if( cells[ i + k ] && cells[ i + k ][ j + l ] && !( k == 0 && l == 0 ) ) {
+
+										if( cells[ i + k ][ j + l ].isBomb )
+											cells[ i ][ j ].indicator++;
+
+									}
+
+								}
+
+							}
+
+							if( cells[ i ][ j ].isBomb == false ) {
+									
+								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, i * 24, j * 24 );
+
+								if( cells[ i ][ j ].indicator > 0 ) {
+
+									ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator - 1 ];
+									ctx.fillText( cells[ i ][ j ].indicator, i * 24 + 6, ( j + 1 ) * 24 - 5 );
+
+								}
 
 							}
 
@@ -99,69 +122,10 @@ function Field( ctx, gameState )
 
 					}
 
-					if( cells[ i ][ j ].isBomb == false ) {
-
-						ctx.font = '20px Consolas';
-
-						var COLORS = [
-						    '#0000ff', // 1
-						    '#017f01', // 2
-						    '#ff0000', // 3
-						    '#010080', // 4
-						    '#810102', // 5
-						    '#008081', // 6
-						    '#000000', // 7
-						    '#808080' // 8
-						];
-
-						var openedCellImage = new Image( 24, 24 );
-							openedCellImage.src = 'images/opened-cell.jpg';
-
-						openedCellImage.onload = function() {
-
-							// ctx.drawImage( this, i * 24, j * 24 );
-
-							// ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator ];
-							// ctx.fillText( cells[ i ][ j ].indicator, 24 * i + 6, j * 24 - 5 );
-
-						};
-
-					}
 
 				}
 
 			}
-
-			console.log( cells );
-
-			/*ctx.font = '20px Consolas';
-
-			var COLORS = [
-			    '#0000ff', // 1
-			    '#017f01', // 2
-			    '#ff0000', // 3
-			    '#010080', // 4
-			    '#810102', // 5
-			    '#008081', // 6
-			    '#000000', // 7
-			    '#808080' // 8
-			];
-
-			for(let i = 0; i < 8; i++) {
-
-				var openedCellImage = new Image( 24, 24 );
-					openedCellImage.src = 'images/opened-cell.jpg';
-
-				openedCellImage.onload = function() {
-
-					ctx.drawImage( this, i * 24, 0 * 24 );
-
-					ctx.fillStyle = COLORS[ i ];
-					ctx.fillText( i + 1, 24 * i + 6, 24 - 5 );
-
-				};
-
-			}*/
 
 		});
 
