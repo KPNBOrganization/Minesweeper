@@ -1,5 +1,8 @@
 function Field( ctx, game )
 {
+	this.xCoord;
+	this.yCoord;
+
 	this.game = game;
 
 	this.cellsCount;
@@ -10,8 +13,11 @@ function Field( ctx, game )
 
 	this.draw = function() {
 
-		ctx.fillStyle = "#bdbdbd";
-		ctx.fillRect( 0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight );
+		// ctx.fillStyle = "#bdbdbd";
+		// ctx.fillRect( 0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight );
+
+		ctx.fillStyle = "#7b7b7b";
+		ctx.fillRect( this.xCoord - 3, this.yCoord - 3, this.cells[ 0 ].length * 24 + 6, this.cells.length * 24 + 6 );
 
 		let cells = this.cells;
 		// let cellsCount = this.cellsCount;
@@ -24,10 +30,10 @@ function Field( ctx, game )
 
 			for( let j = 0; j < cells[ i ].length; j++ ) {
 
-				cells[ i ][ j ].xCoord = i * 24;
-				cells[ i ][ j ].yCoord = j * 24;
+				cells[ i ][ j ].xCoord = this.xCoord + j * 24;
+				cells[ i ][ j ].yCoord = this.yCoord + i * 24;
 
-				ctx.drawImage( ctx.resources.getResource( CLOSED_CELL_IMAGE ).image, i * 24, j * 24 );
+				ctx.drawImage( ctx.resources.getResource( CLOSED_CELL_IMAGE ).image, cells[ i ][ j ].xCoord, cells[ i ][ j ].yCoord );
 
 			}
 
@@ -48,8 +54,17 @@ function Field( ctx, game )
 
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
-			let clickRow = Math.ceil( event.clientY / 24 ) - 1;
-			let clickColumn = Math.ceil( event.clientX / 24 ) - 1;
+			if( 
+				event.offsetX > field.game.resetButton().xCoord 
+				&& event.offsetX < field.game.resetButton().xCoord + field.game.resetButton().width 
+				&& event.offsetY > field.game.resetButton().yCoord 
+				&& event.offsetY < field.game.resetButton().yCoord + field.game.resetButton().height 
+			) {
+				window.location.reload();
+			}
+
+			let clickRow = Math.ceil( ( event.offsetY - field.yCoord ) / 24 ) - 1;
+			let clickColumn = Math.ceil( ( event.offsetX - field.xCoord ) / 24 ) - 1;
 
 			if( cells[ clickRow ] && cells[ clickRow ][ clickColumn ] ) {
 
@@ -71,15 +86,6 @@ function Field( ctx, game )
 								cells[ bombRow ][ bombColumn ].isBomb = true;
 
 								bombs++;
-
-								// var bombImage = new Image( 24, 24 );
-									// bombImage.src = 'images/bomb.jpg';
-
-								// bombImage.onload = function() {
-
-									// ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, bombColumn * 24, bombRow * 24 );
-
-								// };
 
 							}
 
@@ -109,19 +115,6 @@ function Field( ctx, game )
 								}
 
 							}
-
-							// if( cells[ i ][ j ].isBomb == false ) {
-									
-							// 	ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, j * 24, i * 24 );
-
-							// 	if( cells[ i ][ j ].indicator > 0 ) {
-
-							// 		ctx.fillStyle = COLORS[ cells[ i ][ j ].indicator - 1 ];
-							// 		ctx.fillText( cells[ i ][ j ].indicator, j * 24 + 6, i * 24 + 19 );
-
-							// 	}
-
-							// }
 
 						}
 
@@ -153,7 +146,11 @@ function Field( ctx, game )
 
 									if( cells[ i ][ j ].isBomb ) {
 
-										ctx.drawImage( ctx.resources.getResource( BOMB_IMAGE ).image, j * 24, i * 24 );
+										ctx.drawImage(
+											ctx.resources.getResource( BOMB_IMAGE ).image,
+											cells[ i ][ j ].xCoord,
+											cells[ i ][ j ].yCoord
+										);
 
 									}
 
@@ -161,16 +158,29 @@ function Field( ctx, game )
 
 							}
 
-							ctx.drawImage( ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, clickColumn * 24, clickRow * 24 );
+							ctx.drawImage( 
+								ctx.resources.getResource( OPENED_BOMB_IMAGE ).image, 
+								cells[ clickRow ][ clickColumn ].xCoord, 
+								cells[ clickRow ][ clickColumn ].yCoord
+							);
 
 						} else {
 
 							if( cells[ clickRow ][ clickColumn ].indicator > 0 ) {
 
-								ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, clickColumn * 24, clickRow * 24 );
+								ctx.drawImage(
+									ctx.resources.getResource( OPENED_CELL_IMAGE ).image,
+									cells[ clickRow ][ clickColumn ].xCoord,
+									cells[ clickRow ][ clickColumn ].yCoord
+								);
 
 								ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
-								ctx.fillText( cells[ clickRow ][ clickColumn ].indicator, clickColumn * 24 + 6, clickRow * 24 + 19 );
+
+								ctx.fillText(
+									cells[ clickRow ][ clickColumn ].indicator,
+									cells[ clickRow ][ clickColumn ].xCoord + 6,
+									cells[ clickRow ][ clickColumn ].yCoord + 19
+								);
 
 							} else {
 
@@ -188,10 +198,19 @@ function Field( ctx, game )
 
 													if( cells[ cellRow + k ][ cellColumn + l ].indicator > 0 ) {
 
-														ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, ( cellColumn + l ) * 24, ( cellRow + k ) * 24 );
+														ctx.drawImage( 
+															ctx.resources.getResource( OPENED_CELL_IMAGE ).image, 
+															cells[ cellRow + k ][ cellColumn + l ].xCoord, 
+															cells[ cellRow + k ][ cellColumn + l ].yCoord
+														);
 
 														ctx.fillStyle = COLORS[ cells[ cellRow + k ][ cellColumn + l ].indicator - 1 ];
-														ctx.fillText( cells[ cellRow + k ][ cellColumn + l ].indicator, ( cellColumn + l ) * 24 + 6, ( cellRow + k ) * 24 + 19 );
+
+														ctx.fillText(
+															cells[ cellRow + k ][ cellColumn + l ].indicator,
+															cells[ cellRow + k ][ cellColumn + l ].xCoord + 6,
+															cells[ cellRow + k ][ cellColumn + l ].yCoord + 19
+														);
 
 													} else {
 
@@ -207,7 +226,11 @@ function Field( ctx, game )
 
 									}
 
-									ctx.drawImage( ctx.resources.getResource( OPENED_CELL_IMAGE ).image, cellColumn * 24, cellRow * 24 );
+									ctx.drawImage(
+										ctx.resources.getResource( OPENED_CELL_IMAGE ).image,
+										cells[ cellRow ][ cellColumn ].xCoord,
+										cells[ cellRow ][ cellColumn ].yCoord
+									);
 
 								};
 

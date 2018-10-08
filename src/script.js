@@ -13,8 +13,8 @@ window.onload = function() {
 		var game = new Game( ctx );
 		game.reset();
 
-		var height = 10;
-		var width = 10;
+		var height = 16;
+		var width = 30;
 
 		for( let i = 0; i < height; i++ ) {
 
@@ -28,10 +28,15 @@ window.onload = function() {
 
 		}
 
-		game.field.bombNumber = 10;
+		game.field.bombNumber = 99;
 
 		game.field.cellsCount = height * width - game.field.bombNumber;
 
+		game.field.xCoord = canvas.width / 2 - width * 24 / 2;
+		game.field.yCoord = 60;
+
+		game.drawDashboard();
+		
 		game.field.draw();
 
 	} );
