@@ -13,14 +13,10 @@ function Field( ctx, game )
 
 	this.draw = function() {
 
-		// ctx.fillStyle = "#bdbdbd";
-		// ctx.fillRect( 0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight );
-
 		ctx.fillStyle = "#7b7b7b";
 		ctx.fillRect( this.xCoord - 3, this.yCoord - 3, this.cells[ 0 ].length * 24 + 6, this.cells.length * 24 + 6 );
 
 		let cells = this.cells;
-		// let cellsCount = this.cellsCount;
 		let bombNumber = this.bombNumber;
 		let gameState = this.game.state;
 
@@ -38,8 +34,6 @@ function Field( ctx, game )
 			}
 
 		}
-
-		ctx.font = '20px Consolas';
 
 		let COLORS = [
 		    '#0000ff', // 1
@@ -120,7 +114,18 @@ function Field( ctx, game )
 
 					}
 
-					console.log( 'Finished Bombs generation' );
+					// Starting game timer
+
+					field.game.countingInterval = setInterval( function() {
+
+						if( field.game.time == 999 )
+							field.game.time = 0;
+
+						field.game.time++;
+
+						field.game.timer().draw();
+
+					}, 1000 );
 
 				} 
 
@@ -128,15 +133,11 @@ function Field( ctx, game )
 
 					if( cells[ clickRow ][ clickColumn ].state == CELL_CLOSED ) {
 
-						console.log( 'Click Registred' );
-
-						console.log( clickRow, clickColumn );
-
 						cells[ clickRow ][ clickColumn ].open();
 
 						if( cells[ clickRow ][ clickColumn ].isBomb ) {
 
-							console.log( 'ITS A FUCKING BOMB!' );
+							clearInterval( field.game.countingInterval );
 
 							gameState = GAME_OVER;
 
@@ -176,6 +177,8 @@ function Field( ctx, game )
 
 								ctx.fillStyle = COLORS[ cells[ clickRow ][ clickColumn ].indicator - 1 ];
 
+								ctx.font = '20px Consolas';
+
 								ctx.fillText(
 									cells[ clickRow ][ clickColumn ].indicator,
 									cells[ clickRow ][ clickColumn ].xCoord + 6,
@@ -205,6 +208,8 @@ function Field( ctx, game )
 														);
 
 														ctx.fillStyle = COLORS[ cells[ cellRow + k ][ cellColumn + l ].indicator - 1 ];
+
+														ctx.font = '20px Consolas';
 
 														ctx.fillText(
 															cells[ cellRow + k ][ cellColumn + l ].indicator,
@@ -242,7 +247,7 @@ function Field( ctx, game )
 
 								gameState = GAME_OVER;
 
-								console.log( 'You won!' );
+								clearInterval( field.game.countingInterval );
 
 							}
 

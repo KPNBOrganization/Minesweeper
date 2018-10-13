@@ -5,7 +5,10 @@ const GAME_OVER = 2;
 function Game( ctx )
 {
 	this.field;
-	this.time;
+
+	this.time = 0;
+	this.countingInterval;
+
 	this.state = GAME_PAUSED;
 
 	var game = this;
@@ -46,6 +49,11 @@ function Game( ctx )
 		this.xCoord = game.field.xCoord + game.field.cells[ 0 ].length * 24 - this.width - 3;
 		this.yCoord = game.field.yCoord - this.height - 6;
 
+		this.numberPad = function( str, max ) {
+			str = str.toString();
+			return str.length < max ? this.numberPad( '0' + str, max ) : str;
+		};
+
 		this.draw = function() {
 
 			ctx.fillStyle = '#000000';
@@ -54,7 +62,7 @@ function Game( ctx )
 			ctx.font = '38px Consolas';
 
 			ctx.fillStyle = 'red';
-			ctx.fillText( '000', this.xCoord + 3, this.yCoord + this.height - 6 );
+			ctx.fillText( this.numberPad( this.time, 3 ), this.xCoord + 3, this.yCoord + this.height - 6 );
 
 		};
 
