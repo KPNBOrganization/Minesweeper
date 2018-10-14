@@ -2,8 +2,13 @@ const OPENED_CELL_IMAGE = 1;
 const CLOSED_CELL_IMAGE = 2;
 const BOMB_IMAGE = 3;
 const OPENED_BOMB_IMAGE = 4;
-const RESET_BUTTON_IMAGE = 5;
-const FLAGGED_CELL_IMAGE = 6;
+
+const GAME_STATE_ON_IMAGE = 5;
+const GAME_STATE_WIN_COND_IMAGE = 6;
+const GAME_STATE_CLICK_IMAGE = 7;
+const GAME_STATE_OVER_IMAGE = 8;
+
+const FLAGGED_CELL_IMAGE = 9;
 
 function Resources()
 {
@@ -29,8 +34,20 @@ function Resources()
 			image: null
 		},
 		{
-			id: RESET_BUTTON_IMAGE,
+			id: GAME_STATE_ON_IMAGE,
 			src: 'images/game-on.png'
+		},
+		{
+			id: GAME_STATE_OVER_IMAGE,
+			src: 'images/game-over.png'
+		},
+		{
+			id: GAME_STATE_WIN_COND_IMAGE,
+			src: 'images/game-won.png'
+		},
+		{
+			id: GAME_STATE_CLICK_IMAGE,
+			src: 'images/game-close.png'
 		},
 		{
 			id: FLAGGED_CELL_IMAGE,

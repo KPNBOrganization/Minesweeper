@@ -21,6 +21,8 @@ function Game( ctx )
 		this.xCoord = game.field.xCoord + game.field.cells[ 0 ].length * 24 / 2 - 16,
 		this.yCoord = game.field.yCoord - 40,
 
+		this.image = GAME_STATE_ON_IMAGE;
+
 		this.draw = function() {
 
 			ctx.fillStyle = '#7b7b7b';
@@ -30,7 +32,7 @@ function Game( ctx )
 			ctx.fillRect( this.xCoord + 2, this.yCoord + 2, this.width - 4, this.height - 4 );
 
 			ctx.drawImage(
-				ctx.resources.getResource( RESET_BUTTON_IMAGE ).image, 
+				ctx.resources.getResource( this.image ).image, 
 				this.xCoord + 4, 
 				this.yCoord + 4
 			);

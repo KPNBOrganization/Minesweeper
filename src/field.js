@@ -171,6 +171,11 @@ function Field( ctx, game )
 
 							gameState = GAME_OVER;
 
+							let resetButton = field.game.resetButton();
+							
+							resetButton.image = GAME_STATE_OVER_IMAGE;
+							resetButton.draw();
+
 							for( let i = 0; i < cells.length; i++ ) { // Row => y
 
 								for( let j = 0; j < cells[ i ].length; j++ ) { // Column => x
@@ -276,6 +281,11 @@ function Field( ctx, game )
 							if( field.cellsCount == 0 ) {
 
 								gameState = GAME_OVER;
+
+								let resetButton = field.game.resetButton();
+							
+								resetButton.image = GAME_STATE_WIN_COND_IMAGE;
+								resetButton.draw();
 
 								clearInterval( field.game.countingInterval );
 
