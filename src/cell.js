@@ -22,8 +22,6 @@ function Cell( ctx, field )
 
 		this.field.cellsCount--;
 
-		console.log( this.field.cellsCount );
-
 	};
 
 	this.flag = function() {
