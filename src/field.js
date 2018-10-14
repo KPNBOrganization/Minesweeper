@@ -46,6 +46,36 @@ function Field( ctx, game )
 		    '#808080' // 8
 		];
 
+		ctx.canvas.addEventListener('contextmenu', function(event){
+
+			let clickRow = Math.ceil( ( event.offsetY - field.yCoord ) / 24 ) - 1;
+			let clickColumn = Math.ceil( ( event.offsetX - field.xCoord ) / 24 ) - 1;
+
+			if( cells[ clickRow ] && cells[ clickRow ][ clickColumn ] ) {
+				if(gameState == GAME_ON){
+					if(cells[ clickRow ][ clickColumn ].flag()){
+						ctx.drawImage( 
+							ctx.resources.getResource( FLAGGED_CELL_IMAGE ).image, 
+							cells[ clickRow ][ clickColumn ].xCoord, 
+							cells[ clickRow ][ clickColumn ].yCoord
+						);
+						field.game.flagNumber--;
+						field.game.flagCounter().draw();
+					} else if (cells[ clickRow ][ clickColumn ].unflag()){
+						ctx.drawImage( 
+							ctx.resources.getResource( CLOSED_CELL_IMAGE ).image, 
+							cells[ clickRow ][ clickColumn ].xCoord, 
+							cells[ clickRow ][ clickColumn ].yCoord
+						);
+						field.game.flagNumber++;
+						field.game.flagCounter().draw();
+					}
+				}
+			}
+
+			event.preventDefault();
+		});
+
 		ctx.canvas.addEventListener( 'click', function( event ) {
 
 			if( 

@@ -29,6 +29,7 @@ window.onload = function() {
 		}
 
 		game.field.bombNumber = 99;
+		game.flagNumber = game.field.bombNumber;
 
 		game.field.cellsCount = height * width - game.field.bombNumber;
 

@@ -8,7 +8,7 @@ function Game( ctx )
 
 	this.time = 0;
 	this.countingInterval;
-
+	this.flagNumber;
 	this.state = GAME_PAUSED;
 
 	var game = this;
@@ -70,13 +70,18 @@ function Game( ctx )
 
 	};
 
-	this.bombsCounter = function() {
+	this.flagCounter = function() {
 
 		this.height = 36;
 		this.width = 69;
 
 		this.xCoord = game.field.xCoord + 3;
 		this.yCoord = game.field.yCoord - this.height - 6;
+
+		this.numberPad = function( str, max ) {
+			str = str.toString();
+			return str.length < max ? this.numberPad( '0' + str, max ) : str;
+		};
 
 		this.draw = function() {
 
@@ -86,7 +91,7 @@ function Game( ctx )
 			ctx.font = '38px Consolas';
 
 			ctx.fillStyle = 'red';
-			ctx.fillText( '000', this.xCoord + 3, this.yCoord + this.height - 6 );
+			ctx.fillText( this.numberPad( this.flagNumber, 3 ), this.xCoord + 3, this.yCoord + this.height - 6 );
 
 		};
 
@@ -104,7 +109,7 @@ function Game( ctx )
 
 		this.resetButton().draw();
 
-		this.bombsCounter().draw();
+		this.flagCounter().draw();
 		
 		this.timer().draw();
 

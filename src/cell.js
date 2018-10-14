@@ -27,8 +27,18 @@ function Cell( ctx, field )
 	};
 
 	this.flag = function() {
+		if (this.state == CELL_CLOSED && this.field.game.flagNumber > 0 ) {
+			this.state = CELL_FLAGGED;	
+			return true;
+		}
+		return false;
+	};
 
-		this.state = CELL_FLAGGED;
-
+	this.unflag = function(){
+		if(this.state == CELL_FLAGGED){
+			this.state = CELL_CLOSED;
+			return true;
+		}
+		return false;
 	};
 }

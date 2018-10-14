@@ -3,6 +3,7 @@ const CLOSED_CELL_IMAGE = 2;
 const BOMB_IMAGE = 3;
 const OPENED_BOMB_IMAGE = 4;
 const RESET_BUTTON_IMAGE = 5;
+const FLAGGED_CELL_IMAGE = 6;
 
 function Resources()
 {
@@ -30,7 +31,13 @@ function Resources()
 		{
 			id: RESET_BUTTON_IMAGE,
 			src: 'images/game-on.png'
+		},
+		{
+			id: FLAGGED_CELL_IMAGE,
+			src: 'images/flagged-cell.jpg',
+			image: null
 		}
+
 	];
 
 	this.load = function( resource ) {
